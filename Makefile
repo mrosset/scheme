@@ -1,7 +1,11 @@
-SRC	= scheme.x $(wildcard *.go) Makefile
-CFLAGS	= `pkg-config --cflags --libs guile-2.2`
+.PHONY: repl
 
-export CGO_ENABLED=1
+default: repl test
 
-scheme.x: scheme.h
-	guile-snarf -o $@ $< $(CFLAGS)
+repl:
+	go build -o ./$@/$@ ./$@
+	file ./$@/$@
+	du -hs ./$@/$@
+
+test:
+	go test -v ./pkg/...
