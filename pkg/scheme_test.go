@@ -12,9 +12,16 @@ func TestVersion(t *testing.T) {
 	}.Equals(t)
 }
 
-func TestAddToLoadPath(t *testing.T) {
-	// Test{
-	//	Expect: true,
-	//	Got:    AddToLoadPath("scm").Bool(),
-	// }.Equals(t)
+func TestList(t *testing.T) {
+	Test{
+		Expect: true,
+		Got:    Eval("%load-path").IsList(),
+	}.Equals(t)
+}
+
+func TestLoadPath(t *testing.T) {
+	Test{
+		Expect: "/tmp/go-scheme.socket",
+		Got:    Eval("socket-file").ToString(),
+	}.Equals(t)
 }

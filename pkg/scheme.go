@@ -1,5 +1,6 @@
 package scheme
 
+// #cgo pkg-config: guile-2.2
 // #cgo CFLAGS: -I/opt/via/include/guile/2.2
 // #cgo LDFLAGS: -L/opt/via/lib -lguile-2.2 -lgmp -lunistring -lffi -lm -lltdl -ldl -lcrypt -lgc
 // #include "scheme.h"
@@ -10,12 +11,20 @@ package scheme
 import "C"
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"unsafe"
+)
+
+var (
+	LoadPath = filepath.Join(os.Getenv("GOPATH"), "src/github.com/mrosset/scheme/scm")
 )
 
 func init() {
 	C.scm_init_guile()
 	C.init()
+	AddToLoadPath(LoadPath)
+	UseModule("go guile")
 }
 
 // SCM provides a guile SCM type
@@ -26,6 +35,48 @@ type SCM struct {
 // NewSCM returns a new initialized SCM type
 func newSCM(scm C.SCM) SCM {
 	return SCM{scm}
+}
+
+// Eval string returning a SCM
+func Eval(expr string) SCM {
+	var (
+		cs  = C.CString(expr)
+		res = C.scm_c_eval_string(cs)
+	)
+	defer C.free(unsafe.Pointer(cs))
+	return newSCM(res)
+}
+
+// Version returns guile scheme version
+func Version() SCM {
+	return Eval("(version)")
+}
+
+// AddToLoadPath add's path to %load-path
+func AddToLoadPath(path string) SCM {
+	scm := fmt.Sprintf(`(add-to-load-path "%s")`, path)
+	fmt.Println(scm)
+	return Eval(scm)
+}
+
+// UseModule loads guile module
+func UseModule(module string) {
+	cs := C.CString(module)
+	C.scm_c_use_module(cs)
+	C.free(unsafe.Pointer(cs))
+}
+
+// Repl starts a new guile REPL
+// FIXME: don't hardcode socket path
+func Repl() SCM {
+	Eval("(use-modules (system repl server))")
+	return Eval(`(run-server
+	(make-unix-domain-server-socket #:path socket-file))`)
+}
+
+// Enter starts a console REPL server
+func Enter() {
+	C.scm_shell(0, nil)
 }
 
 func (s SCM) Bool() bool {
@@ -61,37 +112,10 @@ func (s SCM) ToString() string {
 	return C.GoString(cs)
 }
 
-// Eval string returning a SCM
-func Eval(expr string) SCM {
-	var (
-		cs  = C.CString(expr)
-		res = C.scm_c_eval_string(cs)
-	)
-	defer C.free(unsafe.Pointer(cs))
-	return newSCM(res)
+func (s SCM) IsList() bool {
+	return newSCM(C.scm_list_p(s.box)).Bool()
 }
 
-// Version returns guile scheme version
-func Version() SCM {
-	return Eval("(version)")
-}
-
-// AddToLoadPath add's path to %load-path
-func AddToLoadPath(path string) SCM {
-	scm := fmt.Sprintf(`(add-to-load-path "%s")`, path)
-	fmt.Println(scm)
-	return Eval(scm)
-}
-
-// Repl starts a new guile REPL
-// FIXME: don't hardcode socket path
-func Repl() SCM {
-	Eval("(use-modules (system repl server))")
-	return Eval(`(run-server
-	(make-unix-domain-server-socket #:path "/tmp/go-scheme.socket"))`)
-}
-
-// Enter starts a console REPL server
-func Enter() {
-	C.scm_shell(0, nil)
+func (s SCM) ToSlice() string {
+	return ""
 }
