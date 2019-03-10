@@ -54,8 +54,7 @@ func Eval(exp string) (SCM, error) {
 	arg0 := C.scm_list_ref(res, C.scm_from_int(0))
 	arg1 := C.scm_list_ref(res, C.scm_from_int(1))
 	if C.scm_is_string(arg1) == 1 {
-		err := fmt.Errorf("%s", newSCM(arg1).ToString())
-		return newSCM(C.scm_make_undefined_variable()), err
+		return newSCM(arg0), fmt.Errorf("%s", newSCM(arg1).ToString())
 	}
 	return newSCM(arg0), nil
 }
