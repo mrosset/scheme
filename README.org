@@ -1,5 +1,5 @@
 * Evaluate guile scheme from go
-
+ [[https://godoc.org/github.com/mrosset/scheme/pkg][https://godoc.org/github.com/mrosset/scheme/pkg?status.svg]]
 * Requirements
 ** Guile 2.2
 on ubuntu 18.10
