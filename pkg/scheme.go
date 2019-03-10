@@ -50,7 +50,6 @@ func Eval(exp string) (SCM, error) {
 	defer C.free(unsafe.Pointer(cm))
 	defer C.free(unsafe.Pointer(cp))
 	res := C.scm_call_1(proc, C.scm_from_locale_string(ce))
-	// n := C.scm_to_int(1)
 	arg0 := C.scm_list_ref(res, C.scm_from_int(0))
 	arg1 := C.scm_list_ref(res, C.scm_from_int(1))
 	if C.scm_is_string(arg1) == 1 {
