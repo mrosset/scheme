@@ -1,0 +1,27 @@
+* Evaluate guile scheme from go
+
+* Install
+#+begin_src shell
+go get github.com/mrosset/scheme/pkg
+#+end_src
+
+#+RESULTS:
+
+* Evaluting scheme
+#+begin_src go
+package main
+
+import (
+        "fmt"
+        "github.com/mrosset/scheme/pkg"
+        "log"
+)
+
+func main() {
+        version, err := scheme.Eval("(version)")
+        if err != nil {
+                log.Fatal(err)
+        }
+        fmt.Printf("guile version: %s\n", version.ToString())
+}
+#+end_src
