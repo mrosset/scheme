@@ -13,15 +13,44 @@ func TestVersion(t *testing.T) {
 }
 
 func TestList(t *testing.T) {
-	Test{
-		Expect: true,
-		Got:    Eval("%load-path").IsList(),
+	got, err := Eval("%load-path")
+	Tests{
+		{
+			Expect: nil,
+			Got:    err,
+		},
+		{
+			Expect: true,
+			Got:    got.IsList(),
+		},
 	}.Equals(t)
 }
 
 func TestLoadPath(t *testing.T) {
-	Test{
-		Expect: "/tmp/go-scheme.socket",
-		Got:    Eval("socket-file").ToString(),
+	got, err := Eval("socket-file")
+	Tests{
+		{
+			Expect: nil,
+			Got:    err,
+		},
+		{
+			Expect: "/tmp/go-scheme.socket",
+			Got:    got.ToString(),
+		},
 	}.Equals(t)
+}
+
+func TestEval(t *testing.T) {
+	got, err := Eval("(version)")
+	Tests{
+		{
+			Expect: nil,
+			Got:    err,
+		},
+		{
+			Expect: "2.2.4",
+			Got:    got.ToString(),
+		},
+	}.Equals(t)
+
 }

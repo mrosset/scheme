@@ -24,7 +24,8 @@ func init() {
 	C.scm_init_guile()
 	C.init()
 	AddToLoadPath(LoadPath)
-	UseModule("go guile")
+	UseModule("go server")
+	UseModule("go eval")
 }
 
 // SCM provides a guile SCM type
@@ -38,25 +39,43 @@ func newSCM(scm C.SCM) SCM {
 }
 
 // Eval string returning a SCM
-func Eval(expr string) SCM {
+func Eval(exp string) (SCM, error) {
 	var (
-		cs  = C.CString(expr)
-		res = C.scm_c_eval_string(cs)
+		ce   = C.CString(exp)
+		cm   = C.CString("go eval")
+		cp   = C.CString("go-eval")
+		proc = C.scm_c_public_ref(cm, cp)
 	)
-	defer C.free(unsafe.Pointer(cs))
-	return newSCM(res)
+	defer C.free(unsafe.Pointer(ce))
+	defer C.free(unsafe.Pointer(cm))
+	defer C.free(unsafe.Pointer(cp))
+	res := C.scm_call_1(proc, C.scm_from_locale_string(ce))
+	// n := C.scm_to_int(1)
+	arg0 := C.scm_list_ref(res, C.scm_from_int(0))
+	arg1 := C.scm_list_ref(res, C.scm_from_int(1))
+	if C.scm_is_string(arg1) == 1 {
+		err := fmt.Errorf("%s", newSCM(arg1).ToString())
+		return newSCM(C.scm_make_undefined_variable()), err
+	}
+	return newSCM(arg0), nil
 }
 
 // Version returns guile scheme version
 func Version() SCM {
-	return Eval("(version)")
+	v, _ := Eval("(version)")
+	return v
+}
+
+func evalstring(exp string) SCM {
+	ce := C.CString(exp)
+	defer C.free(unsafe.Pointer(ce))
+	return newSCM(C.scm_c_eval_string(ce))
 }
 
 // AddToLoadPath add's path to %load-path
 func AddToLoadPath(path string) SCM {
-	scm := fmt.Sprintf(`(add-to-load-path "%s")`, path)
-	fmt.Println(scm)
-	return Eval(scm)
+	exp := fmt.Sprintf(`(add-to-load-path "%s")`, path)
+	return evalstring(exp)
 }
 
 // UseModule loads guile module
@@ -67,11 +86,8 @@ func UseModule(module string) {
 }
 
 // Repl starts a new guile REPL
-// FIXME: don't hardcode socket path
-func Repl() SCM {
-	Eval("(use-modules (system repl server))")
-	return Eval(`(run-server
-	(make-unix-domain-server-socket #:path socket-file))`)
+func Repl() (SCM, error) {
+	return Eval("(server-start)")
 }
 
 // Enter starts a console REPL server
