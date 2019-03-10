@@ -1,13 +1,18 @@
 * Evaluate guile scheme from go
 
+* Requirements
+** Guile 2.2
+on ubuntu 18.10
+#+begin_src shell
+apt install guile-2.2-dev
+#+end_src
+
 * Install
 #+begin_src shell
 go get github.com/mrosset/scheme/pkg
 #+end_src
 
-#+RESULTS:
-
-* Evaluting scheme
+* Example
 #+begin_src go
 package main
 

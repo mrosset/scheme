@@ -1,13 +1,7 @@
 package scheme
 
 // #cgo pkg-config: guile-2.2
-// #cgo CFLAGS: -I/opt/via/include/guile/2.2
-// #cgo LDFLAGS: -L/opt/via/lib -lguile-2.2 -lgmp -lunistring -lffi -lm -lltdl -ldl -lcrypt -lgc
-// #include "scheme.h"
-// static void init() {
-// scm_c_define_gsubr (s_scm_via_build, 0, 0, 0, (scm_t_subr) scm_via_build);;
-// scm_c_export("build", NULL);
-// }
+// #include <libguile.h>
 import "C"
 import (
 	"fmt"
@@ -22,7 +16,6 @@ var (
 
 func init() {
 	C.scm_init_guile()
-	C.init()
 	AddToLoadPath(LoadPath)
 	UseModule("go server")
 	UseModule("go eval")
