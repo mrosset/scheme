@@ -8,8 +8,12 @@ import (
 	"unsafe"
 )
 
-func init() {
+func Init() {
 	C.scm_init_guile()
+}
+
+func init() {
+	Init()
 }
 
 // SCM provides a guile SCM type
@@ -22,12 +26,14 @@ func newSCM(scm C.SCM) SCM {
 	return SCM{scm}
 }
 
-// Eval string returning a SCM
+// Eval string returning a SCM. Does not handle guile exceptions
 func EvalString(exp string) (SCM, error) {
 	return evalstring(exp), nil
 }
 
-func evalOld(exp string) (SCM, error) {
+// Eval string returning a SCM. If a guile exception occurs return a
+// Go error
+func Eval(exp string) (SCM, error) {
 	var (
 		ce   = C.CString(exp)
 		cm   = C.CString("go eval")
@@ -41,7 +47,7 @@ func evalOld(exp string) (SCM, error) {
 	arg0 := C.scm_list_ref(res, C.scm_from_int(0))
 	arg1 := C.scm_list_ref(res, C.scm_from_int(1))
 	if C.scm_is_string(arg1) == 1 {
-		return newSCM(arg0), fmt.Errorf("%s", newSCM(arg1).ToString())
+		return newSCM(nil), fmt.Errorf("%s", newSCM(arg1).ToString())
 	}
 	return newSCM(arg0), nil
 }

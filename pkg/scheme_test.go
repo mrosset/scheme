@@ -4,6 +4,11 @@ import (
 	"testing"
 )
 
+func init() {
+	Init()
+	AddToLoadPath("../")
+}
+
 func TestVersion(t *testing.T) {
 	var (
 		expect = "3.0.7"
@@ -26,20 +31,23 @@ func TestList(t *testing.T) {
 	}
 }
 
-// func TestSocketPath(t *testing.T) {
-//	got, err := Eval("socket-file")
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//	Test{
-//		Expect: "/tmp/go-scheme.socket",
-//		Got:    got.ToString(),
-//	}.Equals(t)
-// }
+func TestSocketPath(t *testing.T) {
+	UseModule("go server")
+	var (
+		got, err = Eval("socket-file")
+		expect   = "/tmp/go-scheme.socket"
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.String() != expect {
+		t.Errorf("Expect %s got %s", expect, got)
+	}
+}
 
 func TestEval(t *testing.T) {
 	var (
-		got, err = EvalString("(version)")
+		got, err = Eval("(version)")
 		expect   = "3.0.7"
 	)
 	if err != nil {
@@ -47,5 +55,14 @@ func TestEval(t *testing.T) {
 	}
 	if got.ToString() != expect {
 		t.Errorf("Expect %s got %s", got.ToString(), expect)
+	}
+}
+
+func TestEvalFail(t *testing.T) {
+	var (
+		_, err = Eval("(versio)")
+	)
+	if err == nil {
+		t.Fatalf("Expected error got nil")
 	}
 }

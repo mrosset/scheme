@@ -10,7 +10,7 @@ repl:
 example:
 	$(MAKE) check -C $@
 
-check: example
+check: repl example
 	go test -v ./pkg/...
 
 clean:
