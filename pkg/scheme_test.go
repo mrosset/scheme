@@ -63,6 +63,6 @@ func TestEvalFail(t *testing.T) {
 		_, err = Eval("(versio)")
 	)
 	if err == nil {
-		t.Fatalf("Expected error got nil")
+		t.Errorf("Expected error got nil")
 	}
 }
