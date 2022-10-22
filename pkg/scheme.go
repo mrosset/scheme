@@ -24,12 +24,7 @@ func newSCM(scm C.SCM) SCM {
 
 // Eval string returning a SCM
 func EvalString(exp string) (SCM, error) {
-	var (
-		ce = C.CString(exp)
-	)
-	defer C.free(unsafe.Pointer(ce))
-	res := C.scm_c_eval_string(ce)
-	return newSCM(res), nil
+	return evalstring(exp), nil
 }
 
 func evalOld(exp string) (SCM, error) {
