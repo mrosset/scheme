@@ -9,10 +9,10 @@ func init() {
 	AddToLoadPath("../")
 }
 
-func TestVersion(t *testing.T) {
+func TestGuileVersion(t *testing.T) {
 	var (
 		expect = "3.0.7"
-		got    = Version().ToString()
+		got    = GuileVersion().String()
 	)
 	if expect != got {
 		t.Errorf("Expect %s got %s", expect, got)
@@ -53,7 +53,7 @@ func TestEval(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.ToString() != expect {
+	if got.String() != expect {
 		t.Errorf("Expect %s got %s", got.ToString(), expect)
 	}
 }

@@ -52,8 +52,8 @@ func Eval(exp string) (SCM, error) {
 	return newSCM(arg0), nil
 }
 
-// Version returns guile scheme version
-func Version() SCM {
+// returns guile scheme version
+func GuileVersion() SCM {
 	v, _ := EvalString("(version)")
 	return v
 }
