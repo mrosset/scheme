@@ -105,6 +105,10 @@ func (s SCM) IsString() bool {
 }
 
 // String provides stringer interface
+func (s SCM) String() string {
+	return s.ToString()
+}
+
 func (s SCM) ToString() string {
 	if !s.IsString() {
 		return ""

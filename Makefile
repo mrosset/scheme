@@ -1,11 +1,18 @@
-.PHONY: repl
+.PHONY: check example repl
 
 export GUILE_AUTO_COMPILE=0
 
-default: repl test
+default: check
 
 repl:
 	$(MAKE) -C $@
 
-check:
+example:
+	$(MAKE) check -C $@
+
+check: example
 	go test -v ./pkg/...
+
+clean:
+	-go clean ./repl
+	-go clean ./example

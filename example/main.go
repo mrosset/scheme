@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	version, err := scheme.Eval("(version)")
+	version, err := scheme.EvalString("(version)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("guile version: %s\n", version.ToString())
+	fmt.Printf("guile version: %s\n", version)
 }
