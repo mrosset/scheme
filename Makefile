@@ -7,6 +7,5 @@ default: repl test
 repl:
 	$(MAKE) -C $@
 
-test:
-	go clean -cache
+check:
 	go test -v ./pkg/...

@@ -1,24 +1,15 @@
 package scheme
 
-// #cgo pkg-config: guile-2.2
+// #cgo pkg-config: guile-3.0
 // #include <libguile.h>
 import "C"
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"unsafe"
-)
-
-var (
-	LoadPath = filepath.Join(os.Getenv("GOPATH"), "src/github.com/mrosset/scheme/scm")
 )
 
 func init() {
 	C.scm_init_guile()
-	AddToLoadPath(LoadPath)
-	UseModule("go server")
-	UseModule("go eval")
 }
 
 // SCM provides a guile SCM type
@@ -32,7 +23,16 @@ func newSCM(scm C.SCM) SCM {
 }
 
 // Eval string returning a SCM
-func Eval(exp string) (SCM, error) {
+func EvalString(exp string) (SCM, error) {
+	var (
+		ce = C.CString(exp)
+	)
+	defer C.free(unsafe.Pointer(ce))
+	res := C.scm_c_eval_string(ce)
+	return newSCM(res), nil
+}
+
+func evalOld(exp string) (SCM, error) {
 	var (
 		ce   = C.CString(exp)
 		cm   = C.CString("go eval")
@@ -53,7 +53,7 @@ func Eval(exp string) (SCM, error) {
 
 // Version returns guile scheme version
 func Version() SCM {
-	v, _ := Eval("(version)")
+	v, _ := EvalString("(version)")
 	return v
 }
 
@@ -78,7 +78,7 @@ func UseModule(module string) {
 
 // Repl starts a new guile REPL
 func Repl() (SCM, error) {
-	return Eval("(server-start)")
+	return EvalString("(server-start)")
 }
 
 // Enter starts a console REPL server
