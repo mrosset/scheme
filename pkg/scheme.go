@@ -1,6 +1,7 @@
 package scheme
 
 // #cgo pkg-config: guile-3.0
+// #cgo LDFLAGS: -lguile-3.0 -lgc -lpthread -ldl -lgmp -lm -lunistring -lffi -lcrypt
 // #include <libguile.h>
 import "C"
 import (
