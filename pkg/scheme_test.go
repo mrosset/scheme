@@ -27,7 +27,19 @@ func TestList(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !got.IsList() {
-		t.Errorf("Expext true got %t", got.IsList())
+		t.Error("Expect list type")
+	}
+}
+
+func TestBool(t *testing.T) {
+	var (
+		got, err = EvalString("#t")
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !got.IsBool() {
+		t.Error("Expect boolean type")
 	}
 }
 
