@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mrosset/scheme/pkg"
+	"github.com/mrosset/scheme"
 )
 
 func main() {

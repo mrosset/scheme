@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mrosset/scheme/pkg"
+	"github.com/mrosset/scheme"
 	"log"
 )
 

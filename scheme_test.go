@@ -10,7 +10,7 @@ const (
 
 func init() {
 	Init()
-	AddToLoadPath("../")
+	AddToLoadPath("./")
 }
 
 func TestGuileVersion(t *testing.T) {

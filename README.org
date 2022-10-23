@@ -1,5 +1,5 @@
 * Evaluate guile scheme from go
- [[https://godoc.org/github.com/mrosset/scheme/pkg][https://godoc.org/github.com/mrosset/scheme/pkg?status.svg]]
+ [[https://godoc.org/github.com/mrosset/scheme][https://godoc.org/github.com/mrosset/scheme?status.svg]]
 * Requirements
 ** Guile 2.2
 on ubuntu 18.10
@@ -9,7 +9,7 @@ apt install guile-2.2-dev
 
 * Install
 #+begin_src shell
-go get github.com/mrosset/scheme/pkg
+go get github.com/mrosset/scheme
 #+end_src
 
 * Example
@@ -18,7 +18,7 @@ package main
 
 import (
         "fmt"
-        "github.com/mrosset/scheme/pkg"
+        "github.com/mrosset/scheme"
         "log"
 )
 
