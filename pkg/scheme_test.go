@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+const (
+	GUILE_VERSION = "3.0.7"
+)
+
 func init() {
 	Init()
 	AddToLoadPath("../")
@@ -11,7 +15,7 @@ func init() {
 
 func TestGuileVersion(t *testing.T) {
 	var (
-		expect = "3.0.7"
+		expect = GUILE_VERSION
 		got    = GuileVersion().String()
 	)
 	if expect != got {
@@ -60,7 +64,7 @@ func TestSocketPath(t *testing.T) {
 func TestEval(t *testing.T) {
 	var (
 		got, err = Eval("(version)")
-		expect   = "3.0.7"
+		expect   = GUILE_VERSION
 	)
 	if err != nil {
 		t.Fatal(err)
