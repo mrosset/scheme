@@ -11,7 +11,7 @@ example:
 	$(MAKE) check -C $@
 
 check: repl example
-	go test -v
+	go test -v .
 
 clean:
 	-go clean ./repl
